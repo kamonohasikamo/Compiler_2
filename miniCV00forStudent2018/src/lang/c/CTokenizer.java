@@ -1,10 +1,10 @@
-package lang.c;
+ package lang.c;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import lang.*;
+import lang.Tokenizer;
 
 public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	@SuppressWarnings("unused")
@@ -59,6 +59,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 //		System.out.println("Token='" + currentTk.toString());
 		return currentTk;
 	}
+
 	private CToken readToken() {
 		CToken tk = null;
 		char ch;
@@ -75,14 +76,26 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 				} else if (ch == (char) -1) {	// EOF
 					startCol = colNo - 1;
 					state = 1;
-				} else if (ch >= '0' && ch <= '9') {
+				} else if (ch >= '1' && ch <= '9') {
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 3;
-				} else if (ch == '+') {
+				}  else if (ch == '0') {
+					startCol = colNo - 1;
+					text.append(ch);
+					state = 11;
+				} else if (ch == '/') {		//comment
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 4;
+				} else if (ch == '+') {
+					startCol = colNo - 1;
+					text.append(ch);
+					state = 8;
+				} else if (ch == '-') {
+					startCol = colNo - 1;
+					text.append(ch);
+					state = 9;
 				} else {			// ヘンな文字を読んだ
 					startCol = colNo - 1;
 					text.append(ch);
@@ -108,8 +121,63 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					accept = true;
 				}
 				break;
-			case 4:					// +を読んだ
+			case 4:
+				ch = readChar();
+				if(ch == '/') {
+					text.append(ch);
+					state = 5;
+				} else if(ch == '*') {
+					text.append(ch);
+					state = 6;
+				} else {
+					backChar(ch);
+					state = 2;
+				}
+				break;
+			case 5:
+				ch = readChar();
+				if (ch != '\r' && ch != (char) -1) {	//改行しない限りコメント行
+					text.append(ch);
+				} else {
+					backChar(ch);
+					text.setLength(0);
+					state = 0;
+				}
+				break;
+			case 6:
+				ch = readChar();
+				if (ch == (char) -1) {
+					backChar(ch);
+					tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
+					accept = true;
+				} else if (ch != '*') {
+					text.append(ch);
+				} else {
+					text.append(ch);
+					state = 7;
+				}
+				break;
+			case 7:
+				ch = readChar();
+				if (ch == (char) -1) {
+					backChar(ch);
+					tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
+					accept = true;
+				} else if (ch == '*') {
+					text.append(ch);
+				} else 	if (ch != '/' ) {
+					state = 6;
+				} else {
+					text.setLength(0);
+					state = 0;
+				}
+				break;
+			case 8:					// +を読んだ
 				tk = new CToken(CToken.TK_PLUS, lineNo, startCol, "+");
+				accept = true;
+				break;
+			case 9:					// -を読んだ
+				tk = new CToken(CToken.TK_SUB, lineNo, startCol, "-");
 				accept = true;
 				break;
 			}
