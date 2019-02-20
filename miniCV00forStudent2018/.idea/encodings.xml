@@ -3,5 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/lang/c/CommentTest.c" charset="Shift_JIS" />
     <file url="file://$PROJECT_DIR$/src/lang/c/CommentTest.c" charset="Shift_JIS" />
+    <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part2/AddressTest.c" charset="Shift_JIS" />
+    <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part2/TokenTest.c" charset="Shift_JIS" />
   </component>
 </project>

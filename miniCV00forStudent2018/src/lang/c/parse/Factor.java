@@ -9,7 +9,7 @@ import lang.c.CToken;
 import lang.c.CTokenizer;
 
 public class Factor extends CParseRule {
-	// factor ::= number
+	// factor ::= factorAmp | number
 	private CParseRule number;
 	public Factor(CParseContext pcx) {
 	}
