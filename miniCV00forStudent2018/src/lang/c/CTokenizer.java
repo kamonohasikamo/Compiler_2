@@ -98,7 +98,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 11;
-					} else if (ch == '/') {		//comment
+					} else if (ch == '/') {		//comment or DIV
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 4;
@@ -114,6 +114,18 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 10;
+					} else if (ch == '*') {		// 掛け算? 将来ポインタとしても活躍しそう
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 19;
+					} else if (ch == '(') {		// (
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 20;
+					} else if (ch == ')') {		// )
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 21;
 					} else {			// ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -157,7 +169,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						state = 6;
 					} else {
 						backChar(ch);
-						state = 2;
+						state = 18;
 					}
 					break;
 				case 5:
@@ -340,6 +352,22 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
 						accept = true;
 					}
+					break;
+				case 18:				// DIVのとき
+					tk = new CToken(CToken.TK_DIV, lineNo, startCol, "/");
+					accept = true;
+					break;
+				case 19:				// MULのとき
+					tk = new CToken(CToken.TK_MUL, lineNo, startCol, "*");
+					accept = true;
+					break;
+				case 20:				// (を読んだ
+					tk = new CToken(CToken.TK_LPAR, lineNo, startCol, "(");
+					accept = true;
+					break;
+				case 21:				// )を読んだ
+					tk = new CToken(CToken.TK_RPAR, lineNo, startCol, ")");
+					accept = true;
 					break;
 			}
 		}

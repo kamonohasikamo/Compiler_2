@@ -10,7 +10,7 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class Expression extends CParseRule {
-	// expression ::= term { expressionAdd || expressionSub}
+	// expression ::= term { expressionAdd }
 	private CParseRule expression;
 
 	public Expression(CParseContext pcx) {
@@ -21,10 +21,13 @@ public class Expression extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CParseRule term = null, list = null;
-		term = new Term(pcx);
-		term.parse(pcx);
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
+		if(Term.isFirst(tk)) {
+			term = new Term(pcx);
+			term.parse(pcx);
+		}
+		tk = ct.getCurrentToken(pcx);
 		while (true) {
 			if (ExpressionAdd.isFirst(tk)) {
 				list = new ExpressionAdd(pcx, term);
@@ -61,7 +64,7 @@ public class Expression extends CParseRule {
 
 class ExpressionAdd extends CParseRule {
 	// expressionAdd ::= '+' term
-	private CToken op;
+	private CToken operand;
 	private CParseRule left, right;
 	public ExpressionAdd(CParseContext pcx, CParseRule left) {
 		this.left = left;
@@ -72,7 +75,7 @@ class ExpressionAdd extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
-		op = ct.getCurrentToken(pcx);
+		operand = ct.getCurrentToken(pcx);
 		// +の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
 		if (Term.isFirst(tk)) {
@@ -98,7 +101,7 @@ class ExpressionAdd extends CParseRule {
 			int rt = right.getCType().getType();	// +の右辺の型
 			int nt = s[lt][rt];						// 規則による型計算
 			if (nt == CType.T_err) {
-				pcx.fatalError(op.toExplainString() + "左辺の型[" + left.getCType().toString() + "]と右辺の型[" + right.getCType().toString() + "]は足せません");
+				pcx.fatalError(operand.toExplainString() + "左辺の型[" + left.getCType().toString() + "]と右辺の型[" + right.getCType().toString() + "]は足せません");
 			}
 			this.setCType(CType.getCType(nt));
 			this.setConstant(left.isConstant() && right.isConstant());	// +の左右両方が定数のときだけ定数
@@ -110,7 +113,7 @@ class ExpressionAdd extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx);		// 左部分木のコード生成を頼む
 			right.codeGen(pcx);		// 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; ExpressionAdd: ２数を取り出して、足し、積む<" + op.toString() + ">");
+			o.println("\tMOV\t-(R6), R0\t; ExpressionAdd: ２数を取り出して、足し、積む<" + operand.toExplainString() + ">");
 			o.println("\tMOV\t-(R6), R1\t; ExpressionAdd:");
 			o.println("\tADD\tR1,    R0\t; ExpressionAdd:");
 			o.println("\tMOV\tR0, (R6)+\t; ExpressionAdd:");
@@ -119,8 +122,8 @@ class ExpressionAdd extends CParseRule {
 }
 
 class ExpressionSub extends CParseRule {
-	// expressionSub ::= '-' term
-	private CToken op;
+	// expressionAdd ::= '+' term
+	private CToken operand;
 	private CParseRule left, right;
 	public ExpressionSub(CParseContext pcx, CParseRule left) {
 		this.left = left;
@@ -131,14 +134,14 @@ class ExpressionSub extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
-		op = ct.getCurrentToken(pcx);
-		// -の次の字句を読む
+		operand = ct.getCurrentToken(pcx);
+		// +の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
 		if (Term.isFirst(tk)) {
 			right = new Term(pcx);
 			right.parse(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "-の後ろはtermです");
+			pcx.fatalError(tk.toExplainString() + "+の後ろはtermです");
 		}
 	}
 
@@ -156,10 +159,10 @@ class ExpressionSub extends CParseRule {
 			int rt = right.getCType().getType();	// -の右辺の型
 			int nt = s[lt][rt];						// 規則による型計算
 			if (nt == CType.T_err) {
-				pcx.fatalError(op.toExplainString() + "左辺の型[" + left.getCType().toString() + "]と右辺の型[" + right.getCType().toString() + "]は引けません");
+				pcx.fatalError(operand.toExplainString() + "左辺の型[" + left.getCType().toString() + "]と右辺の型[" + right.getCType().toString() + "]は引けません");
 			}
 			this.setCType(CType.getCType(nt));
-			this.setConstant(left.isConstant() && right.isConstant());	// -の左右両方が定数のときだけ定数
+			this.setConstant(left.isConstant() && right.isConstant());	// +の左右両方が定数のときだけ定数
 		}
 	}
 
@@ -168,7 +171,7 @@ class ExpressionSub extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx);		// 左部分木のコード生成を頼む
 			right.codeGen(pcx);		// 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; ExpressionSub: ２数を取り出して、引き、積む<" + op.toString() + ">");
+			o.println("\tMOV\t-(R6), R0\t; ExpressionSub: ２数を取り出して、引き、積む<" + operand.toExplainString() + ">");
 			o.println("\tMOV\t-(R6), R1\t; ExpressionSub:");
 			o.println("\tSUB\tR0,    R1\t; ExpressionSub:");
 			o.println("\tMOV\tR1, (R6)+\t; ExpressionSub:");

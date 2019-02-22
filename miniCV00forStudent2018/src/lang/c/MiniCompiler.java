@@ -19,7 +19,7 @@ public class MiniCompiler {
 				if (pcx.hasNoError()) parseTree.codeGen(pcx);			// コード生成
 				pcx.errorReport();
 			} else {
-				pcx.fatalError(tk.toExplainString() + "プログラムの先頭にゴミがあります");
+				pcx.fatalError(tk.toExplainString() + "あなたの頭にゴミがありますネェ＾ω＾;;;");
 			}
 		} catch (FatalErrorException e) {
 			e.printStackTrace();

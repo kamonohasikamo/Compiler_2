@@ -32,16 +32,16 @@ public class Program extends CParseRule {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; program starts");
 		o.println("\t. = 0x100");
-		o.println("\tJMP\t__START\t\t; ProgramNode: 最初の実行文へ");
+		o.println("\tJMP\t__START\t\t; ProgramNode: プログラムはっじまるぜぇ～～～！！初期実行文へGo！！！");
 		// ここには将来、宣言に対するコード生成が必要
 		if (program != null) {
 			o.println("__START:");
-			o.println("\tMOV\t#0x1000, R6\t; ProgramNode: 計算用スタック初期化");
+			o.println("\tMOV\t#0x1000, R6\t; ProgramNode: 計算用スタック初期化初期化初期化初期化ぁ！！！");
 			program.codeGen(pcx);
 			o.println("\tMOV\t-(R6), R0\t; ProgramNode: 計算結果確認用");
 		}
 		o.println("\tHLT\t\t\t\t; ProgramNode:");
-		o.println("\t.END\t\t\t; ProgramNode:");
+		o.println("\t.END\t\t\t; ProgramNode: プログラム終了だぁ！！！！！！！！！！！！");
 		o.println(";;; program completes");
 	}
 }
