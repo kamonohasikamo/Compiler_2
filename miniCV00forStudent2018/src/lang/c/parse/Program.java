@@ -10,7 +10,7 @@ public class Program extends CParseRule {
 
 	public Program(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return Expression.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -20,7 +20,7 @@ public class Program extends CParseRule {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		if (tk.getType() != CToken.TK_EOF) {
-			pcx.fatalError(tk.toExplainString() + "プログラムの最後にゴミがあります");
+			pcx.fatalError(tk.toExplainString() + "入力プログラム間違えてませんか？");
 		}
 	}
 
@@ -30,7 +30,7 @@ public class Program extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; program starts");
+		o.println(";;; Program starts");
 		o.println("\t. = 0x100");
 		o.println("\tJMP\t__START\t\t; ProgramNode: プログラムはっじまるぜぇ～～～！！初期実行文へGo！！！");
 		// ここには将来、宣言に対するコード生成が必要
@@ -42,6 +42,6 @@ public class Program extends CParseRule {
 		}
 		o.println("\tHLT\t\t\t\t; ProgramNode:");
 		o.println("\t.END\t\t\t; ProgramNode: プログラム終了だぁ！！！！！！！！！！！！");
-		o.println(";;; program completes");
+		o.println(";;; Program completes");
 	}
 }

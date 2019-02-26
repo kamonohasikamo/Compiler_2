@@ -14,7 +14,7 @@ public class Term extends CParseRule {
 	private CParseRule term;
 	public Term(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return Factor.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -55,9 +55,9 @@ public class Term extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; term starts");
+		o.println(";;; Term starts");
 		if (term != null) { term.codeGen(pcx); }
-		o.println(";;; term completes");
+		o.println(";;; Term completes");
 	}
 }
 
@@ -67,7 +67,7 @@ class TermMult extends CParseRule {
 	public TermMult(CParseContext pcx, CParseRule left) {
 		this.left = left;
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_MUL;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -86,10 +86,12 @@ class TermMult extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		// 掛け算の型計算規則
 		final int s[][] = {
-		//		T_err			T_int			T_pint
-			{	CType.T_err,	CType.T_err, 	CType.T_err},	// T_err
-			{	CType.T_err,	CType.T_int, 	CType.T_err},	// T_int
-			{	CType.T_err,	CType.T_err,	CType.T_err},	// T_pint
+		//		T_err			T_int			T_pint			T_array			T_parray
+			{	CType.T_err,	CType.T_err, 	CType.T_err,	CType.T_err,	CType.T_err},	// T_err
+			{	CType.T_err,	CType.T_int, 	CType.T_err,	CType.T_err,	CType.T_err},	// T_int
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_pint
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_array
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	//T_parray
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);
@@ -123,13 +125,13 @@ class TermDiv extends CParseRule {
 	public TermDiv(CParseContext pcx, CParseRule left) {
 		this.left = left;
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_DIV;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
-		operand = ct.getCurrentToken(pcx);	//「*」
+		operand = ct.getCurrentToken(pcx);	//「/」
 		CToken tk = ct.getNextToken(pcx);
 		if (Factor.isFirst(tk)) {
 			right = new Factor(pcx);
@@ -142,10 +144,12 @@ class TermDiv extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		// 割り算の型計算規則
 		final int s[][] = {
-		//		T_err			T_int			T_pint
-			{	CType.T_err,	CType.T_err, 	CType.T_err},	// T_err
-			{	CType.T_err,	CType.T_int, 	CType.T_err},	// T_int
-			{	CType.T_err,	CType.T_err,	CType.T_err},	// T_pint
+		//		T_err			T_int			T_pint			T_array			T_parray
+			{	CType.T_err,	CType.T_err, 	CType.T_err,	CType.T_err,	CType.T_err},	// T_err
+			{	CType.T_err,	CType.T_int, 	CType.T_err,	CType.T_err,	CType.T_err},	// T_int
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_pint
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_array
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	//T_parray
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);

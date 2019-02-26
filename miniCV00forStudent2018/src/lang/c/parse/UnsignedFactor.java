@@ -13,20 +13,20 @@ public class UnsignedFactor extends CParseRule {
 	private CParseRule rule;
 	public UnsignedFactor(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
-		return Number.isFirst(tk) || FactorAmp.isFirst(tk) || tk.getType() == CToken.TK_LPAR;
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺を返す
+		return Number.isFirst(tk) || FactorAmp.isFirst(tk) || tk.getType() == CToken.TK_LPAR || AddressToValue.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		if(Number.isFirst(tk)) {
-			rule = new Number(pcx);			//Number
+			rule = new Number(pcx);			// Number
 			rule.parse(pcx);
-		} else if (FactorAmp.isFirst(tk)) {	//FacterAmp
+		} else if (FactorAmp.isFirst(tk)) {	// FacterAmp
 			rule = new FactorAmp(pcx);
 			rule.parse(pcx);
-		} else if (tk.getType() == CToken.TK_LPAR) {
+		} else if (tk.getType() == CToken.TK_LPAR) { // [ expresstion ]を表現
 			tk = ct.getNextToken(pcx);
 			if (Expression.isFirst(tk)) {
 				rule = new Expression(pcx);
@@ -40,6 +40,9 @@ public class UnsignedFactor extends CParseRule {
 			} else {
 				rule = null;
 			}
+		} else if (AddressToValue.isFirst(tk)) { // AddressToValue
+			rule = new AddressToValue(pcx);
+			rule.parse(pcx);
 		}
 	}
 
@@ -53,8 +56,8 @@ public class UnsignedFactor extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; unsignedfactor starts");
+		o.println(";;; UnsignedFactor starts");
 		if (rule != null) { rule.codeGen(pcx);}
-		o.println(";;; unsignedfactor completes");
+		o.println(";;; UnsignedFactor completes");
 	}
 }

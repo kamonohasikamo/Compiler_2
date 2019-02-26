@@ -5,5 +5,7 @@
     <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part2/TokenTest.c" charset="Shift_JIS" />
     <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part3/ExpressionTest.c" charset="Shift_JIS" />
     <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part3/TokenTest.c" charset="Shift_JIS" />
+    <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part4/IdentTest.c" charset="Shift_JIS" />
+    <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part4/TokenTest.c" charset="Shift_JIS" />
   </component>
 </project>

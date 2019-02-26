@@ -13,7 +13,7 @@ public class Factor extends CParseRule {
 	private CParseRule factor;
 	public Factor(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return PlusFactor.isFirst(tk) || MinusFactor.isFirst(tk) || UnsignedFactor.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -41,9 +41,9 @@ public class Factor extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; factor starts");
+		o.println(";;; Factor starts");
 		if (factor != null) { factor.codeGen(pcx); }
-		o.println(";;; factor completes");
+		o.println(";;; Factor completes");
 	}
 }
 
@@ -86,7 +86,7 @@ class MinusFactor extends CParseRule {
 	private CParseRule unsignedfactor;
 	public MinusFactor(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_SUB;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {

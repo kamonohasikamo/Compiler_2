@@ -126,6 +126,18 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 21;
+					} else if (ch == '[') {		// [
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 22;
+					} else if (ch == ']') {		// ]
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 23;
+					} else if (isAlpha(ch)) {	//ident(識別子)
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 24;
 					} else {			// ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -369,6 +381,23 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					tk = new CToken(CToken.TK_RPAR, lineNo, startCol, ")");
 					accept = true;
 					break;
+				case 22:				// [を読んだ
+					tk = new CToken(CToken.TK_LBRA, lineNo, startCol, "[");
+					accept = true;
+					break;
+				case 23:				// ]を読んだ
+					tk = new CToken(CToken.TK_RBRA, lineNo, startCol, "]");
+					accept = true;
+					break;
+				case 24:				// identを読んだとき
+					ch = readChar();
+					if (Character.isDigit(ch) || isAlpha(ch)) {	//まだ英文字が続くのであれば文字列を積んでいく
+						text.append(ch);
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
+						accept = true;
+					}
 			}
 		}
 		return tk;

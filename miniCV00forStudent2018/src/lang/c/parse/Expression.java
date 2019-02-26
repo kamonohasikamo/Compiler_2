@@ -10,12 +10,12 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class Expression extends CParseRule {
-	// expression ::= term { expressionAdd }
+	// expression ::= term { expressionAdd | expressionSub}
 	private CParseRule expression;
 
 	public Expression(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return Term.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -56,9 +56,9 @@ public class Expression extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; expression starts");
+		o.println(";;; Expression starts");
 		if (expression != null) expression.codeGen(pcx);
-		o.println(";;; expression completes");
+		o.println(";;; Expression completes");
 	}
 }
 
@@ -69,30 +69,32 @@ class ExpressionAdd extends CParseRule {
 	public ExpressionAdd(CParseContext pcx, CParseRule left) {
 		this.left = left;
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_PLUS;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
 		operand = ct.getCurrentToken(pcx);
-		// +の次の字句を読む
+		// + の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
 		if (Term.isFirst(tk)) {
 			right = new Term(pcx);
 			right.parse(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "+の後ろはtermです");
+			pcx.fatalError(tk.toExplainString() + " + の後ろはtermです");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		// 足し算の型計算規則
 		final int s[][] = {
-		//		T_err			T_int			T_pint
-			{	CType.T_err,	CType.T_err, 	CType.T_err},	// T_err
-			{	CType.T_err,	CType.T_int, 	CType.T_pint},	// T_int
-			{	CType.T_err,	CType.T_pint,	CType.T_err},	// T_pint
+		//		T_err			T_int			T_pint			T_array			T_parray
+			{	CType.T_err,	CType.T_err, 	CType.T_err,	CType.T_err,	CType.T_err},	// T_err
+			{	CType.T_err,	CType.T_int, 	CType.T_pint,	CType.T_err,	CType.T_err},	// T_int
+			{	CType.T_err,	CType.T_pint,	CType.T_err,	CType.T_err,	CType.T_err},	// T_pint
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_array
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_parray
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);
@@ -122,35 +124,37 @@ class ExpressionAdd extends CParseRule {
 }
 
 class ExpressionSub extends CParseRule {
-	// expressionAdd ::= '+' term
+	// expressionAdd ::= '-' term
 	private CToken operand;
 	private CParseRule left, right;
 	public ExpressionSub(CParseContext pcx, CParseRule left) {
 		this.left = left;
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_SUB;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
 		operand = ct.getCurrentToken(pcx);
-		// +の次の字句を読む
+		// - の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
 		if (Term.isFirst(tk)) {
 			right = new Term(pcx);
 			right.parse(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "+の後ろはtermです");
+			pcx.fatalError(tk.toExplainString() + " - の後ろはtermです");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		final int s[][] = {
-		//		T_err			T_int			T_pint
-			{	CType.T_err,	CType.T_err, 	CType.T_err},	// T_err
-			{	CType.T_err,	CType.T_int, 	CType.T_err},	// T_int
-			{	CType.T_err,	CType.T_pint,	CType.T_int},	// T_pint
+		//		T_err			T_int			T_pint			T_array			T_parray
+			{	CType.T_err,	CType.T_err, 	CType.T_err,	CType.T_err,	CType.T_err},	// T_err
+			{	CType.T_err,	CType.T_int, 	CType.T_pint,	CType.T_err,	CType.T_err},	// T_int
+			{	CType.T_err,	CType.T_pint,	CType.T_err,	CType.T_err,	CType.T_err},	// T_pint
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_array
+			{	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err,	CType.T_err},	// T_parray
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);
@@ -162,7 +166,7 @@ class ExpressionSub extends CParseRule {
 				pcx.fatalError(operand.toExplainString() + "左辺の型[" + left.getCType().toString() + "]と右辺の型[" + right.getCType().toString() + "]は引けません");
 			}
 			this.setCType(CType.getCType(nt));
-			this.setConstant(left.isConstant() && right.isConstant());	// +の左右両方が定数のときだけ定数
+			this.setConstant(left.isConstant() && right.isConstant());	// -の左右両方が定数のときだけ定数
 		}
 	}
 

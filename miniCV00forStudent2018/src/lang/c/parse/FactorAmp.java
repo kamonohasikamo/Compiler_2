@@ -10,18 +10,23 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class FactorAmp extends CParseRule {
-	// factorAmp ::= AMP number
+	// factorAmp ::= AMP (number | primary )
 	private CParseRule pnumber;
+	private CToken amp;
 	public FactorAmp(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) {	// 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_AMP;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		CTokenizer ct = pcx.getTokenizer();
+		amp = ct.getCurrentToken(pcx);
 		CToken tk = ct.getNextToken(pcx);
 		if(Number.isFirst(tk)) {
-			pnumber = new Number(pcx);		//Number
+			pnumber = new Number(pcx);		// Number
+			pnumber.parse(pcx);
+		} else if (Primary.isFirst(tk)) {
+			pnumber = new Primary(pcx);		// Primary
 			pnumber.parse(pcx);
 		}
 	}
@@ -29,6 +34,9 @@ public class FactorAmp extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (pnumber != null) {
 			pnumber.semanticCheck(pcx);
+			if (pnumber instanceof Primary && ((Primary)pnumber).PMcheck()) {
+				pcx.fatalError(amp.toExplainString() + "&の後ろに*がきてはいけません");
+			}
 			setCType(CType.getCType(CType.T_pint));	// Typeをポインタにする
 			setConstant(pnumber.isConstant());	// number は常に定数
 		}
@@ -36,8 +44,8 @@ public class FactorAmp extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; factoramp starts");
+		o.println(";;; FactorAmp starts");
 		if (pnumber != null) { pnumber.codeGen(pcx); }
-		o.println(";;; factoramp completes");
+		o.println(";;; FactorAmp completes");
 	}
 }
