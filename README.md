@@ -7,7 +7,7 @@ Javaで作ります
 目標は全課題の実施
 1から14まで頑張る。
 
-  - 必須実験
+  - 必須実験<br>
 実験0：加算式の計算コンパイラ　miniC　ver.00
 　ー加算のできるコンパイラ
 　1．構文定義(LL(1)文法)
@@ -18,23 +18,23 @@ Javaで作ります
  factor         := number
  number         := NUM
  
-実験1：減算の導入　miniC　ver.00
+実験1：減算の導入　miniC　ver.01
 
-実験2：アドレス値の導入　miniC　ver.00
+実験2：アドレス値の導入　miniC　ver.02
 
-実験3：四則演算と符号の導入　miniC　ver.00
+実験3：四則演算と符号の導入　miniC　ver.03
 
-実験4：変数参照の導入　miniC　ver.00
+実験4：変数参照の導入　miniC　ver.04
 
-実験5：変数への代入の導入　miniC　ver.00
+実験5：変数への代入の導入　miniC　ver.05
 
-実験6:変数宣言の導入　miniC　ver.00
+実験6:変数宣言の導入　miniC　ver.06
 
-実験7:条件判定の導入　miniC　ver.00
+実験7:条件判定の導入　miniC　ver.07
 
-実験8:if、while文の導入　miniC　ver.00
+実験8:if、while文の導入　miniC　ver.08
 
- - オプション実験
+ - オプション実験<br>
   - 関数について
 実験9:局所変数が使用可能な miniC
 
