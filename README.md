@@ -17,7 +17,8 @@ Javaで作ります
  expressionAdd  := PLUS term<br>
  term           := factor<br>
  factor         := number<br>
- number         := NUM
+ number         := NUM<br>
+ <br>
 実験1：減算の導入　miniC　ver.01
 
 実験2：アドレス値の導入　miniC　ver.02
