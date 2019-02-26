@@ -8,15 +8,16 @@ Javaで作ります
 1から14まで頑張る。
 
   - 必須実験<br>
-実験0：加算式の計算コンパイラ　miniC　ver.00
-　ー加算のできるコンパイラ
-　1．構文定義(LL(1)文法)
- program        := expression EOF
- expression     := term { expressionAdd }
- expressionAdd  := PLUS term
- term           := factor
- factor         := number
- number         := NUM
+  <br>
+実験0：加算式の計算コンパイラ　miniC　ver.00 <br>
+　ー加算のできるコンパイラ<br>
+　1．構文定義(LL(1)文法)<br>
+ program        := expression EOF<br>
+ expression     := term { expressionAdd }<br>
+ expressionAdd  := PLUS term<br>
+ term           := factor<br>
+ factor         := number<br>
+ number         := NUM<br>
  
 実験1：減算の導入　miniC　ver.01
 
@@ -35,7 +36,7 @@ Javaで作ります
 実験8:if、while文の導入　miniC　ver.08
 
  - オプション実験<br>
-  - 関数について
+  - 関数について<br>
 実験9:局所変数が使用可能な miniC
 
 実験10:引数なし関数が使用可能な　miniC
