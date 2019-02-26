@@ -17,8 +17,7 @@ Javaで作ります
  expressionAdd  := PLUS term<br>
  term           := factor<br>
  factor         := number<br>
- number         := NUM<br>
- <br>
+ number         := NUM
 実験1：減算の導入　miniC　ver.01
 
 実験2：アドレス値の導入　miniC　ver.02
@@ -36,10 +35,10 @@ Javaで作ります
 実験8:if、while文の導入　miniC　ver.08
 
  - オプション実験<br>
-  - 関数については実験9から11の3部作<br>
-  <br>
+  - 関数については実験9から11の3部作
+
 実験9:局所変数が使用可能な miniC
-<br>
+
 実験10:引数なし関数が使用可能な　miniC
 
 実験11:引数付き関数が使用可能な　miniC
