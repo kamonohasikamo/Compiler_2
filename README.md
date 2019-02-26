@@ -18,7 +18,7 @@ Javaで作ります
  term           := factor<br>
  factor         := number<br>
  number         := NUM<br>
- 
+ <br>
 実験1：減算の導入　miniC　ver.01
 
 実験2：アドレス値の導入　miniC　ver.02
@@ -39,7 +39,7 @@ Javaで作ります
   - 関数については実験9から11の3部作<br>
   <br>
 実験9:局所変数が使用可能な miniC
-
+<br>
 実験10:引数なし関数が使用可能な　miniC
 
 実験11:引数付き関数が使用可能な　miniC
