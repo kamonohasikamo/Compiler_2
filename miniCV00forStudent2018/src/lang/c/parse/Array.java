@@ -9,7 +9,7 @@ public class Array extends CParseRule {
     private CParseRule expression;
     public Array(CParseContext pcx) {
     }
-    public static boolean isFirst(CToken tk) {
+    public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
         return tk.getType() == CToken.TK_LBRA;
     }
     public void parse(CParseContext pcx) throws FatalErrorException {

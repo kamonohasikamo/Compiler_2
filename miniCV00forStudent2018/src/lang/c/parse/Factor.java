@@ -51,7 +51,7 @@ class PlusFactor extends CParseRule {
 	private CParseRule unsignedfactor;
 	public PlusFactor(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
+	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
 		return tk.getType() == CToken.TK_PLUS;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {

@@ -13,7 +13,7 @@ public class AddressToValue extends CParseRule {
     public AddressToValue(CParseContext pcx) {
 
     }
-    public static boolean isFirst(CToken tk) {
+    public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
         return Primary.isFirst(tk);
     }
     public void parse(CParseContext pcx) throws FatalErrorException {
@@ -35,6 +35,8 @@ public class AddressToValue extends CParseRule {
         PrintStream o = pcx.getIOContext().getOutStream();
         o.println(";;; AddresstToValue starts");
         if (primary != null) { primary.codeGen(pcx); }
+        o.println("\tMOV\t-(R6),   R0\t; AddressToValue: アドレスを取り出して、内容を参照して、積む");
+        o.println("\tMOV\t(R0), (R6)+\t; AddressToValue:");
         o.println(";;; AddresstToValue completes");
     }
 }
