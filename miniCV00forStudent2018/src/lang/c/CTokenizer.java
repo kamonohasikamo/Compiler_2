@@ -138,6 +138,14 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 24;
+					} else if (ch == '=') {		// '='
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 25;
+					} else if (ch == ';') {		// ';'
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 26;
 					} else {			// ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -398,6 +406,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
 						accept = true;
 					}
+					break;
+				case 25:				// = を読んだとき
+					tk = new CToken(CToken.TK_ASSIGN, lineNo, startCol, "=");
+					accept = true;
+					break;
+				case 26:				// ; を読んだとき
+					tk = new CToken(CToken.TK_SEMI, lineNo, startCol, ";");
+					accept = true;
+					break;
 			}
 		}
 		return tk;

@@ -20,7 +20,7 @@ public class Ident extends CParseRule {
     }
 
     public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-        this.setCType(CType.getCType(CType.T_parray));
+        this.setCType(CType.getCType(CType.T_int));
         this.setConstant(false);
     }
 
