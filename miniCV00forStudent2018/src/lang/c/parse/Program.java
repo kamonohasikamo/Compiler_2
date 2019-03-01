@@ -8,20 +8,19 @@ import lang.c.*;
 
 public class Program extends CParseRule {
 	// program ::= { declaration } { expression }EOF
-	private List<CParseRule> statements;
 	private List<CParseRule> declarations;
-	private CParseRule statement;
+	private List<CParseRule> statements;
 
 	public Program(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
-		return Declaration.isFirst(tk) ||Statement.isFirst(tk);
+	public static boolean isFirst(CToken tk) {
+		return  Declaration.isFirst(tk) || Statement.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CParseRule rule = null;
-		declarations	= new ArrayList<CParseRule>();
-		statements		= new ArrayList<CParseRule>();
+		declarations = new ArrayList<CParseRule>();
+		statements = new ArrayList<CParseRule>();
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		while(true) {
@@ -45,7 +44,7 @@ public class Program extends CParseRule {
 			}
 		}
 		if (tk.getType() != CToken.TK_EOF) {
-			pcx.fatalError(tk.toExplainString() + "入力プログラム間違えてませんか？");
+			pcx.fatalError(tk.toExplainString() + "プログラムの最後にゴミがあります");
 		}
 	}
 

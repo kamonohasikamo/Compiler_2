@@ -15,7 +15,7 @@ public class Expression extends CParseRule {
 
 	public Expression(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
+	public static boolean isFirst(CToken tk) {
 		return Term.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {

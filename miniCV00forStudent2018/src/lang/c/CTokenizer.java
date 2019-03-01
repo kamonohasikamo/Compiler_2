@@ -138,7 +138,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 24;
-					} else if (ch == '=') {		// '='
+					} else if (ch == '=') {		// '=' or '=='
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 25;
@@ -150,6 +150,18 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 27;
+					}  else if (ch == '<') {	// '<'または'<='を受理
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 28;
+					}  else if (ch == '>') {	// '>'または'>='を受理
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 30;
+					}   else if (ch == '!') {	// '!'
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 33;
 					} else {			// ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -414,8 +426,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					}
 					break;
 				case 25:				// = を読んだとき
-					tk = new CToken(CToken.TK_ASSIGN, lineNo, startCol, "=");
-					accept = true;
+					ch = readChar();
+					if (ch == '=') {
+						text.append(ch);
+						state = 32;
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_ASSIGN, lineNo, startCol, "=");
+						accept = true;
+					}
 					break;
 				case 26:				// ; を読んだとき
 					tk = new CToken(CToken.TK_SEMI, lineNo, startCol, ";");
@@ -423,6 +442,55 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					break;
 				case 27:				// , を読んだとき
 					tk = new CToken(CToken.TK_CANMA, lineNo, startCol, ",");
+					accept = true;
+					break;
+				case 28:				// < を読んだとき
+					ch = readChar();
+					if (ch == '=') {	// 次の文字が「=」なら「<=」として受理
+						text.append(ch);
+						state = 29;
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_LT, lineNo, startCol, "<");
+						accept = true;
+					}
+					break;
+				case 29:				// <= として読んだとき
+					tk = new CToken(CToken.TK_LE, lineNo, startCol, "<=");
+					accept = true;
+					break;
+				case 30:				// > を読んだとき
+					ch = readChar();
+					if (ch == '=') {	// 次の文字が「=」なら「>=」として受理
+						text.append(ch);
+						state = 31;
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_GT, lineNo, startCol, ">");
+						accept = true;
+					}
+					break;
+				case 31:				// >= として読んだとき
+					tk = new CToken(CToken.TK_GE, lineNo, startCol, ">=");
+					accept = true;
+					break;
+				case 32:				// == を読んだとき
+					tk = new CToken(CToken.TK_EQ, lineNo, startCol, "==");
+					accept = true;
+					break;
+				case 33:				// ! を読んだとき
+					ch = readChar();
+					if (ch == '=') {	// != として受理
+						text.append(ch);
+						state = 34;
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
+						accept = true;
+					}
+					break;
+				case 34:
+					tk = new CToken(CToken.TK_NE, lineNo, startCol, "!=");
 					accept = true;
 					break;
 			}
