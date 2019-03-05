@@ -158,10 +158,18 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 30;
-					}   else if (ch == '!') {	// '!'
+					}  else if (ch == '!') {	// '!'
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 33;
+					} else if (ch == '{') {		// '{'
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 35;
+					} else if (ch == '}') {		// '}'
+						startCol = colNo - 1;
+						text.append(ch);
+						state = 36;
 					} else {			// ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
