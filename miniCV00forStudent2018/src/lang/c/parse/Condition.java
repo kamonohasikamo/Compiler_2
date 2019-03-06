@@ -48,7 +48,7 @@ public class Condition extends CParseRule{
                 condition = new ConditionNE(pcx, expression);
                 condition.parse(pcx);
             } else {
-                //error
+                pcx.fatalError(tk.toExplainString() + "条件部の右辺がありません");
             }
         } else if (tk.getType() == CToken.TK_TRUE) {
             tf = true;

@@ -11,7 +11,9 @@ public class CParseContext extends ParseContext {
 	public CTokenizer getTokenizer()		{ return (CTokenizer) super.getTokenizer(); }
 
 	private int seqNo = 0;
+	private int brcNo = 0;
 	public int getSeqId() { return ++seqNo; }
+	public int getBrcId() { return ++brcNo; }
 
 	public CSymbolTable getTable() {
 		return st;

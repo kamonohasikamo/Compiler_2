@@ -497,8 +497,16 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						accept = true;
 					}
 					break;
-				case 34:
+				case 34:	// != を読んだ
 					tk = new CToken(CToken.TK_NE, lineNo, startCol, "!=");
+					accept = true;
+					break;
+				case 35:	// { を読んだ
+					tk = new CToken(CToken.TK_LCUR, lineNo, startCol, "{");
+					accept = true;
+					break;
+				case 36:	// } を読んだ
+					tk = new CToken(CToken.TK_RCUR, lineNo, startCol, "}");
 					accept = true;
 					break;
 			}

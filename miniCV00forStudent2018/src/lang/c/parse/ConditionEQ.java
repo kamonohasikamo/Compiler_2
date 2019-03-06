@@ -12,7 +12,7 @@ public class ConditionEQ extends CParseRule {
         this.left = left;
     }
 
-    public static boolean isFirst(CToken tk) {
+    public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
         return tk.getType() == CToken.TK_EQ;
     }
 

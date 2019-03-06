@@ -13,7 +13,9 @@ public class Statement extends CParseRule{
     public Statement(CParseContext pcx) {
     }
     public static boolean isFirst(CToken tk) {
-        return StatementAssign.isFirst(tk);
+        return StatementAssign.isFirst(tk)
+                || Branch.isFirst(tk)
+                || StatementIO.isFirst(tk);
     }
     public void parse(CParseContext pcx) throws FatalErrorException {
         // ここにやってくるときは、必ずisFirst()が満たされている
@@ -21,6 +23,12 @@ public class Statement extends CParseRule{
         CToken tk = ct.getCurrentToken(pcx);
         if (StatementAssign.isFirst(tk)) {
             rule = new StatementAssign(pcx);
+            rule.parse(pcx);
+        } else if (Branch.isFirst(tk)) {
+            rule = new Branch(pcx);
+            rule.parse(pcx);
+        } else if (StatementIO.isFirst(tk)) {
+            rule = new StatementIO(pcx);
             rule.parse(pcx);
         }
     }

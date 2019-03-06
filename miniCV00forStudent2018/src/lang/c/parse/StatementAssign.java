@@ -14,7 +14,7 @@ public class StatementAssign extends CParseRule{
     private CParseRule expression;
     public StatementAssign(CParseContext pcx) {
     }
-    public static boolean isFirst(CToken tk) {
+    public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
         return Primary.isFirst(tk);
     }
     public void parse(CParseContext pcx) throws FatalErrorException {

@@ -19,7 +19,7 @@ public class DeclItem extends CParseRule {
     int size = 1;
     boolean constp = false;
     boolean isGlobal = true;
-    int addr = 0;	//とりあえず
+    int addr = 0;	//とりあえず0としておく
 
     public DeclItem(CParseContext pcx) {
     }

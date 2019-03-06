@@ -17,7 +17,7 @@ public class ConstItem extends CParseRule {
     int size = 1;		//定数値を入れる
     boolean constp = true;
     boolean isGlobal = true;
-    int addr = 0;	//とりあえず
+    int addr = 0;	//とりあえず0としておく
 
     public ConstItem(CParseContext pcx) {
     }

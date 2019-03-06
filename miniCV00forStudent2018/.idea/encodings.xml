@@ -11,5 +11,6 @@
     <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part6/DeclTest.c" charset="Shift_JIS" />
     <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part7/ConditionTest.c" charset="Shift_JIS" />
     <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part7/TokenTest.c" charset="Shift_JIS" />
+    <file url="file://$PROJECT_DIR$/src/lang/c/TestCase/Part8/StatementTest.c" charset="Shift_JIS" />
   </component>
 </project>
