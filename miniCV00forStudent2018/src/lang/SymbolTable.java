@@ -10,7 +10,7 @@ public abstract class SymbolTable<E extends SymbolTableEntry> extends HashMap<St
 	public abstract E search(String name);
 	// 全体表示
 	public void show() {
-		System.out.println("--- Symbol Table ---");
+//		System.out.println("--- Symbol Table ---");
 		for (Iterator<String> i = keySet().iterator(); i.hasNext(); ) {
 			String label = i.next();
 			E e = get(label);
@@ -20,6 +20,6 @@ public abstract class SymbolTable<E extends SymbolTableEntry> extends HashMap<St
 				System.out.println(label + "\t= " + e.toExplainString());
 			}
 		}
-		System.out.println("------");
+//		System.out.println("------");
 	}
 }

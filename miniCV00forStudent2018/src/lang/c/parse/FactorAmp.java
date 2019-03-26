@@ -10,12 +10,11 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class FactorAmp extends CParseRule {
-	// factorAmp ::= AMP (number | primary )
 	private CParseRule rule;
 	private CToken amp;
 	public FactorAmp(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) { // 構文定義の右辺がここに来る
+	public static boolean isFirst(CToken tk) {
 		return tk.getType() == CToken.TK_AMP;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {

@@ -3,24 +3,27 @@ package lang.c.parse;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import lang.*;
-import lang.c.*;
+
+import lang.FatalErrorException;
+import lang.c.CParseContext;
+import lang.c.CParseRule;
+import lang.c.CToken;
+import lang.c.CTokenizer;
 
 public class Program extends CParseRule {
-	// program ::= { declaration } { expression }EOF
+	// program ::= expression EOF
 	private List<CParseRule> declarations;
-	private List<CParseRule> statements;
-
+	private List<CParseRule> function;
 	public Program(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) {
-		return  Declaration.isFirst(tk) || Statement.isFirst(tk);
+	public static boolean isFirst(CToken tk) { // 構文定義の右側がここに来る
+		return  Declaration.isFirst(tk) || Function.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CParseRule rule = null;
 		declarations = new ArrayList<CParseRule>();
-		statements = new ArrayList<CParseRule>();
+		function = new ArrayList<CParseRule>();
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		while(true) {
@@ -34,10 +37,10 @@ public class Program extends CParseRule {
 			}
 		}
 		while(true) {
-			if (Statement.isFirst(tk)) {
-				rule = new Statement(pcx);
+			if (Function.isFirst(tk)) {
+				rule = new Function(pcx);
 				rule.parse(pcx);
-				statements.add(rule);
+				function.add(rule);
 				tk = ct.getCurrentToken(pcx);
 			} else {
 				break;
@@ -49,30 +52,30 @@ public class Program extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		for (CParseRule program : declarations) {
-			if (program != null) { program.semanticCheck(pcx); }
+		for (CParseRule declrton : declarations) {
+			declrton.semanticCheck(pcx);
 		}
-		for (CParseRule program : statements) {
-			if (program != null) { program.semanticCheck(pcx); }
+		for (CParseRule stmt : function) {
+			stmt.semanticCheck(pcx);
 		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; Program starts");
+		o.println(";;; program starts");
 		o.println("\t. = 0x100");
-		o.println("\tJMP\t__START\t\t; ProgramNode: プログラムはっじまるぜぇ～～～！！初期実行文へGo！！！");
+		o.println("\tJMP\t__START\t; ProgramNode: 最初の実行文へ");
 		o.println("__START:");
-		o.println("\tMOV\t#0x1000, R6\t; ProgramNode: 計算用スタック初期化初期化初期化初期化ぁ！！！");
-		for (CParseRule program : declarations) {
-			program.codeGen(pcx);
+		o.println("\tMOV\t#0x1000, R6\t; ProgramNode: 計算用スタック初期化");
+		for (CParseRule declrton : declarations) {
+			declrton.codeGen(pcx);
 		}
-		for (CParseRule program : statements) {
-			program.codeGen(pcx);
+		for (CParseRule stmt : function) {
+			stmt.codeGen(pcx);
 		}
-		// o.println("\tMOV\t-(R6), R0\t; ProgramNode: 計算結果確認用");
-		o.println("\tHLT\t\t\t\t; ProgramNode:");
-		o.println("\t.END\t\t\t; ProgramNode: プログラム終了だぁ！！！！！！！！！！！！");
-		o.println(";;; Program completes");
+		//o.println("\tMOV\t-(R6), R0\t; ProgramNode: 計算結果確認用");
+		o.println("\tHLT\t\t\t; ProgramNode:");
+		o.println("\t.END\t\t\t; ProgramNode:");
+		o.println(";;; program completes");
 	}
 }

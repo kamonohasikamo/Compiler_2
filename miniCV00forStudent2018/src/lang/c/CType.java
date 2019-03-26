@@ -4,17 +4,19 @@ public class CType {
 	public static final int T_err		= 0;		// 型エラー
 	public static final int T_int		= 1;		// int
 	public static final int T_pint		= 2;		// int*
-	public static final int T_array		= 3;		// int[]
-	public static final int T_parray	= 4;		// int*[]
-	public static final int T_bool 		= 5;		// Boolean
+	public static final int T_ary		= 3;		// int[]
+	public static final int T_pary		= 4;		// int*[]
+	public static final int T_bool		= 5;		// bool
+	public static final int T_void		= 6;		// void
 
 	private static CType[] typeArray = {
 		new CType(T_err,	"error"),
 		new CType(T_int,	"int"),
 		new CType(T_pint,	"int*"),
-		new CType(T_array, 	"int[]"),
-		new CType(T_parray, "int*[]"),
+		new CType(T_ary,	"int[]"),
+		new CType(T_pary,	"int*[]"),
 		new CType(T_bool,	"bool"),
+		new CType(T_void,	"void"),
 	};
 
 	private int type;

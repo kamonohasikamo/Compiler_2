@@ -1,11 +1,12 @@
 package lang.c;
 
-import lang.*;
-import lang.c.parse.*;
+import lang.FatalErrorException;
+import lang.IOContext;
+import lang.c.parse.Program;
 
 public class MiniCompiler {
 	public static void main(String[] args) {
-		String inFile = "C:\\Users\\cs16048\\Documents\\JIKKEN2\\miniCV00forStudent2018\\src\\lang\\c\\TestCase\\Part8\\StatementTest.c"; // 適切なファイルを絶対パスで与えること
+		String inFile = "C:\\Users\\cs16048\\Documents\\JIKKEN2\\miniCV00forStudent2018\\src\\lang\\c\\TestCase\\Part9\\TestCase09.c"; // 適切なファイルを絶対パスで与えること
 		IOContext ioCtx = new IOContext(inFile, System.out, System.err);
 		CTokenizer tknz = new CTokenizer(new CTokenRule());
 		CParseContext pcx = new CParseContext(ioCtx, tknz);
@@ -19,7 +20,7 @@ public class MiniCompiler {
 				if (pcx.hasNoError()) parseTree.codeGen(pcx);			// コード生成
 				pcx.errorReport();
 			} else {
-				pcx.fatalError(tk.toExplainString() + "あなたの頭にゴミがありますネェ＾ω＾;;;");
+				pcx.fatalError(tk.toExplainString() + "プログラムの先頭にゴミがあります");
 			}
 		} catch (FatalErrorException e) {
 			e.printStackTrace();

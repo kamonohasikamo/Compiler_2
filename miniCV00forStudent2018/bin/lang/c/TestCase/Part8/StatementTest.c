@@ -21,4 +21,4 @@ while (true) {
    a=4;
 }
 //input 1;
-output 5;
+//output 5;
