@@ -46,12 +46,12 @@ public class Array extends CParseRule{
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; array starts");
+	//	o.println(";;; array starts");
 		if (expression != null) { expression.codeGen(pcx);}
 		o.println("\tMOV\t-(R6), R0\t; Array:添え字を取り出し、変数番地に変えてスタックに積む");
 		o.println("\tMOV\t-(R6), R1\t; Array:変数番地の取り出し");
 		o.println("\tADD\tR1, R0\t; Array:");
 		o.println("\tMOV\tR0, (R6)+\t; Array:");
-		o.println(";;; array completes");
+	//	o.println(";;; array completes");
 	}
 }

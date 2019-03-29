@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lang.FatalErrorException;
-import lang.c.*;
+import lang.c.CParseContext;
+import lang.c.CParseRule;
+import lang.c.CSymbolTable;
+import lang.c.CToken;
+import lang.c.CTokenizer;
+import lang.c.CType;
 
 public class Declblock extends CParseRule {
 	private int addrsize;
@@ -40,7 +45,7 @@ public class Declblock extends CParseRule {
 		addrsize = cst.getAddrsize();		//局所変数の必要領域数
 		while(true) {
 			if (Statement.isFirst(tk)) {
-				rule = new Statement(pcx);
+				rule = new Statement(pcx, ident);
 				rule.parse(pcx);
 				statements.add(rule);
 				tk = ct.getCurrentToken(pcx);
@@ -48,12 +53,12 @@ public class Declblock extends CParseRule {
 				break;
 			}
 		}
-		cst.showTable();
+		//cst.showTable();
 		if (tk.getType() == CToken.TK_RCUR) {
 			cst.deleteLocalSymbolTable();	//local削除
 			ct.getNextToken(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "}がありません");
+			pcx.fatalError(tk.toExplainString() + "Declblock: } がありません");
 		}
 	}
 
@@ -63,7 +68,7 @@ public class Declblock extends CParseRule {
 		}
 		for (CParseRule stmt : statements) {
 			stmt.semanticCheck(pcx);
-			if (((Statement)stmt).checkStRt()) {
+			if (((Statement)stmt).isStatementReturn()) {
 				if (rtrn != null) {
 					if (stmt.getCType() != rtrn) {	//2回目以降のリターン文とのチェック
 						pcx.fatalError("返り値の型が一部一致していません");
@@ -72,7 +77,7 @@ public class Declblock extends CParseRule {
 					rtrn = stmt.getCType();
 					setCType(rtrn);
 				}
-			} else if (((Statement)stmt).checkStBr()) {
+			} else if (((Statement)stmt).isStatementBranch()) {
 				if (rtrn != null) {
 					if ((stmt.getCType() != null) && stmt.getCType() != rtrn) {	//2回目以降のリターン文とのチェック
 						pcx.fatalError("返り値の型が一部一致していません");

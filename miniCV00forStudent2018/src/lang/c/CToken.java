@@ -32,12 +32,11 @@ public class CToken extends SimpleToken {
 	public static final int TK_RCUR			= 28;	// }
 	public static final int TK_INPUT		= 29;	// input
 	public static final int TK_OUTPUT		= 30;	// output
-	public static final int TK_VOID			= 31;	// void
-	public static final int TK_RETURN		= 32;	// return
-	public static final int TK_FUNC			= 33;	// func
-	public static final int TK_CALL			= 34;	// call
-	public static final int TK_ATSIGN		= 35;	// @
-
+	public static final int TK_VOID			= 31;	// VOID
+	public static final int TK_RETURN		= 32;	// RETURN
+	public static final int TK_FUNC			= 33;	// FUNC
+	public static final int TK_CALL			= 34;	// CALL
+	public static final int TK_AT			= 35;	// @
 
 	public CToken(int type, int lineNo, int colNo, String s) {
 		super(type, lineNo, colNo, s);

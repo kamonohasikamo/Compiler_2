@@ -42,10 +42,10 @@ public class Factor extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; factor starts");
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	//	o.println(";;; factor starts");
 		if (factor != null) { factor.codeGen(pcx); }
-		o.println(";;; factor completes");
+	//	o.println(";;; factor completes");
 	}
 }
 
@@ -76,10 +76,10 @@ class PlusFactor extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; plusfactor starts");
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	//	o.println(";;; plusfactor starts");
 		if (unsignedfactor != null) { unsignedfactor.codeGen(pcx); }
-		o.println(";;; plusfactor completes");
+	//	o.println(";;; plusfactor completes");
 	}
 }
 
@@ -116,13 +116,13 @@ class MinusFactor extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; minusfactor starts");
+	//	o.println(";;; minusfactor starts");
 		if (unsignedfactor != null) { unsignedfactor.codeGen(pcx); }
 		//0-num
 		o.println("\tMOV\t-(R6), R0\t; MinusFactor: 符号を反転する ");
 		o.println("\tMOV\t#0, R1\t; MinusFactor:");
 		o.println("\tSUB\tR0, R1\t; MinusFactor:");
 		o.println("\tMOV\tR1, (R6)+\t; MinusFactor:");
-		o.println(";;; minusfactor completes");
+	//	o.println(";;; minusfactor completes");
 	}
 }

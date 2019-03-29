@@ -133,7 +133,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 23;
-				} else if (isAlpha(ch)) {	//ident
+				} else if (isAlpha(ch)) {		//ident
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 24;
@@ -169,6 +169,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 36;
+				} else if (ch == '@') {		//at
+					startCol = colNo - 1;
+					text.append(ch);
+					state = 37;
 				} else {			// ヘンな文字を読んだ
 					startCol = colNo - 1;
 					text.append(ch);
@@ -430,7 +434,6 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					Integer i = (Integer) rule.get(s);
 					tk = new CToken(((i == null) ? CToken.TK_IDENT : i.intValue()), lineNo, startCol, s);
 					accept = true;
-
 				}
 				break;
 			case 25:
@@ -507,6 +510,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 				break;
 			case 36:
 				tk = new CToken(CToken.TK_RCUR, lineNo, startCol, "}");
+				accept = true;
+				break;
+			case 37:
+				tk = new CToken(CToken.TK_AT, lineNo, startCol, "@");
 				accept = true;
 				break;
 			}

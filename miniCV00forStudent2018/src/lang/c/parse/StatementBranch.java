@@ -8,7 +8,9 @@ import lang.c.CTokenizer;
 
 public class StatementBranch extends CParseRule {
 	private CParseRule branch;
-	public StatementBranch(CParseContext pcx) {
+	private CToken ident;
+	public StatementBranch(CParseContext pcx, CToken ident) {
+		this.ident = ident;
 	}
 	public static boolean isFirst(CToken tk) {
 		return If.isFirst(tk) || While.isFirst(tk);
@@ -17,10 +19,10 @@ public class StatementBranch extends CParseRule {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		if (If.isFirst(tk)) {
-			branch = new If(pcx);
+			branch = new If(pcx, ident);
 			branch.parse(pcx);
 		} else if (While.isFirst(tk)) {
-			branch = new While(pcx);
+			branch = new While(pcx, ident);
 			branch.parse(pcx);
 		}
 	}

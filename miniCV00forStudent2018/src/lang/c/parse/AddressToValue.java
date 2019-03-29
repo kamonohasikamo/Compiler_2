@@ -34,10 +34,10 @@ public class AddressToValue extends CParseRule{
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; addresstovalue starts");
+	//	o.println(";;; addresstovalue starts");
 		if (primary != null) { primary.codeGen(pcx); }
 		o.println("\tMOV\t-(R6), R0\t; AddressToValue: アドレスを取り出して、内容を参照して、積む");
 		o.println("\tMOV\t(R0), (R6)+\t; AddressToValue:");
-		o.println(";;; addresstovalue completes");
+	//	o.println(";;; addresstovalue completes");
 	}
 }

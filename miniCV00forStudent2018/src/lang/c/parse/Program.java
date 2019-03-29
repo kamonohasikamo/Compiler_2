@@ -16,7 +16,7 @@ public class Program extends CParseRule {
 	private List<CParseRule> function;
 	public Program(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) { // 構文定義の右側がここに来る
+	public static boolean isFirst(CToken tk) {
 		return  Declaration.isFirst(tk) || Function.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -62,7 +62,7 @@ public class Program extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; program starts");
+	//	o.println(";;; program starts");
 		o.println("\t. = 0x100");
 		o.println("\tJMP\t__START\t; ProgramNode: 最初の実行文へ");
 		o.println("__START:");
@@ -74,8 +74,8 @@ public class Program extends CParseRule {
 			stmt.codeGen(pcx);
 		}
 		//o.println("\tMOV\t-(R6), R0\t; ProgramNode: 計算結果確認用");
-		o.println("\tHLT\t\t\t; ProgramNode:");
+		o.println("\tHLT\t\t\t\t; ProgramNode:");
 		o.println("\t.END\t\t\t; ProgramNode:");
-		o.println(";;; program completes");
+	//	o.println(";;; program completes");
 	}
 }

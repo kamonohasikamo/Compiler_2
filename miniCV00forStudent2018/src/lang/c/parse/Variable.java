@@ -1,7 +1,5 @@
 package lang.c.parse;
 
-import java.io.PrintStream;
-
 import lang.FatalErrorException;
 import lang.c.CParseContext;
 import lang.c.CParseRule;
@@ -40,7 +38,7 @@ public class Variable extends CParseRule{
 				pcx.fatalError("配列は" + ident.getCType().toString() + "型ではありません");
 			}
 			setCType(ident.getCType());
-			if (array != null) {
+			if (array != null) {			//call追加されたから多分変わる
 				array.semanticCheck(pcx);
 				if (ident.getCType() == CType.getCType(CType.T_ary)) {		//変換しちゃう
 					setCType(CType.getCType(CType.T_int));		// x = a[0] できるからよい？
@@ -53,10 +51,10 @@ public class Variable extends CParseRule{
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; variable starts");
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	//	o.println(";;; variable starts");
 		if (ident != null) { ident.codeGen(pcx);}
 		if (array != null) { array.codeGen(pcx);}
-		o.println(";;; variable completes");
+	//	o.println(";;; variable completes");
 	}
 }

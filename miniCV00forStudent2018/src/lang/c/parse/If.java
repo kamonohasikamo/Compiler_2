@@ -10,7 +10,9 @@ import lang.c.CTokenizer;
 
 public class If extends CParseRule {
 	private CParseRule stcd, stbr, stel;
-	public If(CParseContext pcx) {
+	private CToken ident;
+	public If(CParseContext pcx, CToken ident) {
+		this.ident = ident;
 	}
 	public static boolean isFirst(CToken tk) {
 		return tk.getType() == CToken.TK_IF;
@@ -18,33 +20,44 @@ public class If extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getNextToken(pcx);	//TK_IF
-		if (CondPart.isFirst(tk)) {
-			stcd = new CondPart(pcx);
+		if (Condblock.isFirst(tk)) {
+			stcd = new Condblock(pcx);
 			stcd.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "条件式がありません");
 		}
 		tk = ct.getCurrentToken(pcx);
-		if (BranchPart.isFirst(tk)) {
-			stbr = new BranchPart(pcx);
+		if (Branchblock.isFirst(tk)) {
+			stbr = new Branchblock(pcx, ident);
 			stbr.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "条件文内部に文がありません");
 		}
 		tk = ct.getCurrentToken(pcx);
 		if (Else.isFirst(tk)) {
-			stel = new Else(pcx);
+			stel = new Else(pcx, ident);
 			stel.parse(pcx);
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (stcd != null && stbr != null && stel != null) {
+		if (stcd != null && stbr != null) {
 			stcd.semanticCheck(pcx);
 			stbr.semanticCheck(pcx);
+		}
+		if (stel != null) {
 			stel.semanticCheck(pcx);
-			setCType(stcd.getCType());
-			setConstant(stcd.isConstant());
+			if (stbr.getCType() == null) {
+				setCType(stel.getCType());
+			} else if (stel.getCType() == null) {
+				setCType(stbr.getCType());
+			} else if (stbr.getCType() == stel.getCType()) {
+				setCType(stbr.getCType());
+			} else {
+				pcx.fatalError("IF文とELSE文での返り値の型が一致していません");
+			}
+		} else {
+			setCType(stbr.getCType());
 		}
 	}
 
@@ -53,15 +66,15 @@ public class If extends CParseRule {
 		if (stcd != null && stbr != null) {
 			int brc = pcx.getBrcId();
 			stcd.codeGen(pcx);
-			o.println("\tMOV\t-(R6), R0; StatementIf: 条件式の結果を取り出す");
-			o.println("\tBRZ\tF" + brc + "; StatementIf: 条件が偽の場合の分岐命令");
+			o.println("\tMOV\t-(R6), R0\t; If: 条件式の結果を取り出す");
+			o.println("\tBRZ\tF" + brc + "\t\t\t; If: 条件が偽の場合の分岐命令");
 			stbr.codeGen(pcx);
-			o.println("\tJMP\tUC" + brc + "; StatementIf: 条件文を抜けるための無条件分岐命令");
-			o.println("F" + brc + ":\t; StatementIf: else文");
+			o.println("\tJMP\tUC" + brc + "\t\t\t; If: 条件文を抜けるための無条件分岐命令");
+			o.println("F" + brc + ":\t\t\t\t\t; If: else文");
 			if (stel != null) {
 				stel.codeGen(pcx);
 			}
-			o.println("UC" + brc + ":\t; StatementIf: 条件文終了");
+			o.println("UC" + brc + ":\t\t\t\t; If: 条件文終了");
 		}
 	}
 }

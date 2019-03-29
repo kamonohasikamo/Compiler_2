@@ -37,18 +37,18 @@ public class Ident extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; ident starts");
+	//	o.println(";;; ident starts");
 		if (ident != null) {
 			if (e.getIsGlobal()) {
 				o.println("\tMOV\t#" + ident.getText() + ", (R6)+\t; Ident: （大域）変数アドレスを積む<"
 						+ ident.toExplainString() + ">");
 			} else {
-				o.println("\tMOV\t#" + e.getAddress() + ", R0\t; Ident: フレームポインタからの相対値");
-				o.println("\tADD\tR4, R0\t; Ident: 相対アドレスを求める");
+				o.println("\tMOV\t#" + e.getAddress() + ", R0\t\t; Ident: フレームポインタからの相対値");
+				o.println("\tADD\tR4, R0\t\t; Ident: 相対アドレスを求める");
 				o.println("\tMOV\tR0, (R6)+\t; Ident: （局所）変数アドレスを積む<"
 						+ ident.toExplainString() + ">");
 			}
 		}
-		o.println(";;; ident completes");
+	//	o.println(";;; ident completes");
 	}
 }

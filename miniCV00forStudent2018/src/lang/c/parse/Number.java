@@ -31,10 +31,10 @@ public class Number extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; number starts");
+	//	o.println(";;; number starts");
 		if (num != null) {
 			o.println("\tMOV\t#" + num.getText() + ", (R6)+\t; Number: 数を積む<" + num.toExplainString() + ">");
 		}
-		o.println(";;; number completes");
+	//	o.println(";;; number completes");
 	}
 }

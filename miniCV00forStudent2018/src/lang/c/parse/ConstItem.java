@@ -76,7 +76,7 @@ public class ConstItem extends CParseRule {
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; ConstItem starts");
+	//	o.println(";;; ConstItem starts");
 		if (e.getIsGlobal()) {
 			o.println(name + ":\t.WORD\t" + size + "\t; ConstItem: 定数の領域確保");
 		} else {
@@ -84,6 +84,6 @@ public class ConstItem extends CParseRule {
 			o.println("\tADD\t#" + addr +", R0\t; ConstItem:");
 			o.println("\tMOV\t#" + size + ", (R0)\t; ConstItem:");
 		}
-		o.println(";;; ConstItem completes");
+	//	o.println(";;; ConstItem completes");
 	}
 }

@@ -6,23 +6,17 @@ import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenizer;
 
-public class CondPart extends CParseRule {
-	private CParseRule condition;
-	public CondPart(CParseContext pcx) {
+public class Call extends CParseRule{
+	public Call(CParseContext pcx) {
 	}
 	public static boolean isFirst(CToken tk) {
 		return tk.getType() == CToken.TK_LPAR;
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
+		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
-		CToken tk = ct.getNextToken(pcx);	//TK_LPAR
-		if (Condition.isFirst(tk)) {
-			condition = new Condition(pcx);
-			condition.parse(pcx);
-		} else {
-			pcx.fatalError(tk.toExplainString() + "条件式がありません");
-		}
-		tk = ct.getCurrentToken(pcx);
+		CToken tk = ct.getCurrentToken(pcx);	// '('
+		tk = ct.getNextToken(pcx);
 		if (tk.getType() == CToken.TK_RPAR) {
 			ct.getNextToken(pcx);
 		} else {
@@ -31,16 +25,9 @@ public class CondPart extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (condition != null) {
-			condition.semanticCheck(pcx);
-			setCType(condition.getCType());
-			setConstant(condition.isConstant());
-		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		if (condition != null) {
-			condition.codeGen(pcx);
-		}
+	//	PrintStream o = pcx.getIOContext().getOutStream();
 	}
 }

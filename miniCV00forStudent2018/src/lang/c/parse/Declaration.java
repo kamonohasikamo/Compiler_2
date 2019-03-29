@@ -10,7 +10,7 @@ public class Declaration extends CParseRule {
 	private CParseRule rule;
 	public Declaration(CParseContext pcx) {
 	}
-	public static boolean isFirst(CToken tk) { // 構文定義の右側がここに来る
+	public static boolean isFirst(CToken tk) {
 		return IntDecl.isFirst(tk) || ConstDecl.isFirst(tk) || VoidDecl.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {

@@ -1,7 +1,5 @@
 package lang.c.parse;
 
-import java.io.PrintStream;
-
 import lang.FatalErrorException;
 import lang.c.CParseContext;
 import lang.c.CParseRule;
@@ -42,9 +40,9 @@ public class FactorAmp extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; factoramp starts");
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	//	o.println(";;; factoramp starts");
 		if (rule != null) { rule.codeGen(pcx); }
-		o.println(";;; factoramp completes");
+	//	o.println(";;; factoramp completes");
 	}
 }

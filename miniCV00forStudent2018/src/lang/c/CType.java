@@ -7,7 +7,7 @@ public class CType {
 	public static final int T_ary		= 3;		// int[]
 	public static final int T_pary		= 4;		// int*[]
 	public static final int T_bool		= 5;		// bool
-	public static final int T_void		= 6;		// void
+	public static final int T_void 		= 6;		// void
 
 	private static CType[] typeArray = {
 		new CType(T_err,	"error"),

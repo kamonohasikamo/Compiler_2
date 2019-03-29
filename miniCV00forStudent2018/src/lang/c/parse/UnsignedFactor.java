@@ -1,7 +1,5 @@
  package lang.c.parse;
 
-import java.io.PrintStream;
-
 import lang.FatalErrorException;
 import lang.c.CParseContext;
 import lang.c.CParseRule;
@@ -15,7 +13,8 @@ public class UnsignedFactor extends CParseRule {
 	}
 	public static boolean isFirst(CToken tk) {
 		return Number.isFirst(tk) || FactorAmp.isFirst(tk)
-				|| tk.getType() == CToken.TK_LPAR || AddressToValue.isFirst(tk);
+				|| tk.getType() == CToken.TK_LPAR || AddressToValue.isFirst(tk)
+				|| CallFunc.isFirst(tk);
 	}
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
@@ -39,8 +38,11 @@ public class UnsignedFactor extends CParseRule {
 					rule = null;
 				}
 			}
-		} else if(AddressToValue.isFirst(tk)) {
+		} else if (AddressToValue.isFirst(tk)) {
 			rule = new AddressToValue(pcx);
+			rule.parse(pcx);
+		} else if (CallFunc.isFirst(tk)) {
+			rule = new CallFunc(pcx);
 			rule.parse(pcx);
 		}
 	}
@@ -54,9 +56,9 @@ public class UnsignedFactor extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; unsignedfactor starts");
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	//	o.println(";;; unsignedfactor starts");
 		if (rule != null) { rule.codeGen(pcx);}
-		o.println(";;; unsignedfactor completes");
+	//	o.println(";;; unsignedfactor completes");
 	}
 }

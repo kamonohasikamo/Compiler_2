@@ -10,7 +10,9 @@ import lang.c.CTokenizer;
 
 public class While extends CParseRule {
 	private CParseRule stcd, stbr;
-	public While(CParseContext pcx) {
+	private CToken ident;
+	public While(CParseContext pcx, CToken ident) {
+		this.ident = ident;
 	}
 	public static boolean isFirst(CToken tk) {
 		return tk.getType() == CToken.TK_WHILE;
@@ -18,15 +20,15 @@ public class While extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getNextToken(pcx);	//TK_WHILE
-		if (CondPart.isFirst(tk)) {
-			stcd = new CondPart(pcx);
+		if (Condblock.isFirst(tk)) {
+			stcd = new Condblock(pcx);
 			stcd.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "条件式がありません");
 		}
 		tk = ct.getCurrentToken(pcx);
-		if (BranchPart.isFirst(tk)) {
-			stbr = new BranchPart(pcx);
+		if (Branchblock.isFirst(tk)) {
+			stbr = new Branchblock(pcx, ident);
 			stbr.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "条件文内部に文がありません");
@@ -37,8 +39,8 @@ public class While extends CParseRule {
 		if (stcd != null && stbr != null) {
 			stcd.semanticCheck(pcx);
 			stbr.semanticCheck(pcx);
-			setCType(stcd.getCType());
-			setConstant(stcd.isConstant());
+			setCType(stbr.getCType());
+			setConstant(stbr.isConstant());
 		}
 	}
 
@@ -46,13 +48,13 @@ public class While extends CParseRule {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		if (stcd != null && stbr != null) {
 			int brc = pcx.getBrcId();
-			o.println("UC" + brc + ":\t; StatementWhile: 再度条件式を評価するための分岐先");
+			o.println("UC" + brc + ":\t\t\t\t; While: 再度条件式を評価するための分岐先");
 			stcd.codeGen(pcx);
-			o.println("\tMOV\t-(R6), R0; StatementWhile: 条件式の結果を取り出す");
-			o.println("\tBRZ\tF" + brc + "; StatementWhile: 条件が偽の場合の分岐命令");
+			o.println("\tMOV\t-(R6), R0\t; While: 条件式の結果を取り出す");
+			o.println("\tBRZ\tF" + brc + "\t\t\t; While: 条件が偽の場合の分岐命令");
 			stbr.codeGen(pcx);
-			o.println("\tJMP\tUC" + brc + "; StatementWhile: 再度条件式を評価するための無条件分岐命令");
-			o.println("F" + brc + ":\t; StatementWhile: 条件文終了");
+			o.println("\tJMP\tUC" + brc + "\t\t\t; While: 再度条件式を評価するための無条件分岐命令");
+			o.println("F" + brc + ":\t\t\t\t\t; While: 条件文終了");
 		}
 	}
 }

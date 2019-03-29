@@ -8,7 +8,9 @@ import lang.c.CTokenizer;
 
 public class Else extends CParseRule {
 	private CParseRule rule;
-	public Else(CParseContext pcx) {
+	private CToken ident;
+	public Else(CParseContext pcx, CToken ident) {
+		this.ident = ident;
 	}
 	public static boolean isFirst(CToken tk) {
 		return tk.getType() == CToken.TK_ELSE;
@@ -17,10 +19,10 @@ public class Else extends CParseRule {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getNextToken(pcx);	//TK_ELSE
 		if (If.isFirst(tk)) {
-			rule = new If(pcx);
+			rule = new If(pcx, ident);
 			rule.parse(pcx);
-		} else if (BranchPart.isFirst(tk)) {
-			rule = new BranchPart(pcx);
+		} else if (Branchblock.isFirst(tk)) {
+			rule = new Branchblock(pcx, ident);
 			rule.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "条件文内部に文がありません");

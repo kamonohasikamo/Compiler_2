@@ -1,89 +1,88 @@
 package lang.c.parse;
 
 import lang.FatalErrorException;
-import lang.c.*;
+import lang.c.CParseContext;
+import lang.c.CParseRule;
+import lang.c.CSymbolTable;
+import lang.c.CSymbolTableEntry;
+import lang.c.CToken;
+import lang.c.CTokenizer;
+import lang.c.CType;
 
-public class VoidDecl extends CParseRule {
-    private CSymbolTableEntry entry;
-    String name = null;
-    CType type = CType.getCType(CType.T_void);
-    int address_size = 0; // アドレスサイズ
-    boolean constp = true;
+public class VoidDecl extends CParseRule{
+	private CSymbolTableEntry e;
+	//CSymbolTableEntryに必要な情報
+	String name = null;
+	CType type = CType.getCType(CType.T_void);
+	int size = 0;
+	boolean constp = true;
 
-    public VoidDecl(CParseContext pcx) {
+	public VoidDecl(CParseContext pcx) {
+	}
+	public static boolean isFirst(CToken tk) {
+		return tk.getType() == CToken.TK_VOID;
+	}
+	public void parse(CParseContext pcx) throws FatalErrorException {
+		// ここにやってくるときは、必ずisFirst()が満たされている
+		CTokenizer ct = pcx.getTokenizer();
+		CToken tk = ct.getNextToken(pcx);	//void
+		CSymbolTable cst = pcx.getTable();
 
-    }
+		if (tk.getType() == CToken.TK_IDENT) {
+			name = tk.getText();
+			tk = ct.getNextToken(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + "識別子がありません");
+		}
+		if (tk.getType() == CToken.TK_LPAR) {
+			tk = ct.getNextToken(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + "(がありません");
+		}
+		if (tk.getType() == CToken.TK_RPAR) {
+			tk = ct.getNextToken(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + ")がありません");
+		}
+		e = cst.registerTable(name, type, size, constp);
+		if (e == null) {
+			pcx.fatalError("識別子" + name + "が重複して定義されています");
+		}
+		while (tk.getType() == CToken.TK_COMMA) {
+			tk = ct.getNextToken(pcx);
+			if (tk.getType() == CToken.TK_IDENT) {
+				name = tk.getText();
+				tk = ct.getNextToken(pcx);
+			} else {
+				pcx.fatalError(tk.toExplainString() + "識別子がありません");
+			}
+			if (tk.getType() == CToken.TK_LPAR) {
+				tk = ct.getNextToken(pcx);
+			} else {
+				pcx.fatalError(tk.toExplainString() + "(がありません");
+			}
+			if (tk.getType() == CToken.TK_RPAR) {
+				tk = ct.getNextToken(pcx);
+			} else {
+				pcx.fatalError(tk.toExplainString() + ")がありません");
+			}
+			e = cst.registerTable(name, type, size, constp);
+			if (e == null) {
+				pcx.fatalError("識別子" + name + "が重複して定義されています");
+			}
+		}
+		if (tk.getType() == CToken.TK_SEMI) {
+			tk = ct.getNextToken(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + ";がありません");
+		}
+	}
 
-    public static boolean isFirst(CToken tk) { // VOID型が来た
-        return tk.getType() == CToken.TK_VOID;
-    }
+	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 
-    public void parse(CParseContext pcx) throws FatalErrorException {
-        // ここにやってくるときは、必ずisFirst()が満たされている
-        CTokenizer ct = pcx.getTokenizer();
-        CToken tk = ct.getNextToken(pcx);
-        CSymbolTable cst = pcx.getTable();
+	}
 
-        if (tk.getType() == CToken.TK_IDENT) { // void型でIDENTがきたら、名前の登録
-            name = tk.getText();
-            tk = ct.getNextToken(pcx);
-        } else { // 識別子のないvoidはアウト
-            pcx.fatalError(tk.toExplainString() + "識別子がありませんケド…(笑)");
-        }
-
-        if (tk.getType() == CToken.TK_LPAR) { // 関数なので()が必要
-            tk = ct.getNextToken(pcx);
-        } else {
-            pcx.fatalError(tk.toExplainString() + "(がありませんョｗｗｗ");
-        }
-
-        if (tk.getType() == CToken.TK_RPAR) {
-            tk = ct.getNextToken(pcx);
-        } else {
-            pcx.fatalError(tk.toExplainString() + ")がありませんねぇ～～～～～～～");
-        }
-
-        entry = cst.registerTable(name, type, address_size, constp);
-        if (entry == null) {
-            pcx.fatalError("識別子である" + name + "が重複して定義されています。書き直そうね＾＾;");
-        }
-        while (tk.getType() == CToken.TK_COMMA) { // コンマがあったら、無くなるまで定義が可能(ex: int a, b, c; みたいな定義の仕方)
-            if (tk.getType() == CToken.TK_IDENT) { // void型でIDENTがきたら、名前の登録
-                name = tk.getText();
-                tk = ct.getNextToken(pcx);
-            } else { // 識別子のないvoidはアウト
-                pcx.fatalError(tk.toExplainString() + "識別子がありませんケド…(笑)");
-            }
-
-            if (tk.getType() == CToken.TK_LPAR) { // 関数なので()が必要
-                tk = ct.getNextToken(pcx);
-            } else {
-                pcx.fatalError(tk.toExplainString() + "(がありませんョｗｗｗ");
-            }
-
-            if (tk.getType() == CToken.TK_RPAR) {
-                tk = ct.getNextToken(pcx);
-            } else {
-                pcx.fatalError(tk.toExplainString() + ")がありませんねぇ～～～～～～～");
-            }
-
-            entry = cst.registerTable(name, type, address_size, constp);
-            if (entry == null) {
-                pcx.fatalError("識別子である" + name + "が重複して定義されています。書き直そうね＾＾;");
-            }
-        }
-        if (tk.getType() == CToken.TK_SEMI) { // ; が来たらそこで宣言終了
-            tk = ct.getNextToken(pcx);
-        } else {
-            pcx.fatalError(tk.toExplainString() + "；がないってやばくね？Pythonじゃないんだから…");
-        }
-    }
-
-    public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-
-    }
-
-    public void codeGen(CParseContext pcx) throws FatalErrorException {
-        //	PrintStream o = pcx.getIOContext().getOutStream();
-    }
+	public void codeGen(CParseContext pcx) throws FatalErrorException {
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	}
 }

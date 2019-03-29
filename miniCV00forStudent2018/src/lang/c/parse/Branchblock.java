@@ -9,9 +9,11 @@ import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenizer;
 
-public class BranchPart extends CParseRule {
+public class Branchblock extends CParseRule {
 	private List<CParseRule> statements;
-	public BranchPart(CParseContext pcx) {
+	private CToken ident;
+	public Branchblock(CParseContext pcx, CToken ident) {
+		this.ident = ident;
 	}
 	public static boolean isFirst(CToken tk) {
 		return tk.getType() == CToken.TK_LCUR;
@@ -23,7 +25,7 @@ public class BranchPart extends CParseRule {
 		CToken tk = ct.getNextToken(pcx);	//TK_LBRC
 		while(true) {
 			if (Statement.isFirst(tk)) {
-				st = new Statement(pcx);
+				st = new Statement(pcx, ident);
 				st.parse(pcx);
 				statements.add(st);
 				tk = ct.getCurrentToken(pcx);
@@ -34,16 +36,18 @@ public class BranchPart extends CParseRule {
 		if (tk.getType() == CToken.TK_RCUR) {
 			ct.getNextToken(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "}がありません");
+			pcx.fatalError(tk.toExplainString() + "Branch: } がありません");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
+		setCType(null);
 		for (CParseRule st : statements) {
 			if (st != null) {
 				st.semanticCheck(pcx);
-				setCType(st.getCType());
-				setConstant(st.isConstant());
+				if (((Statement)st).isStatementReturn()) {
+					setCType(st.getCType());
+				}
 			}
 		}
 	}

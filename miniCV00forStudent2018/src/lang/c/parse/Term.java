@@ -54,10 +54,10 @@ public class Term extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; term starts");
+	//	PrintStream o = pcx.getIOContext().getOutStream();
+	//	o.println(";;; term starts");
 		if (term != null) { term.codeGen(pcx); }
-		o.println(";;; term completes");
+	//	o.println(";;; term completes");
 	}
 }
 
