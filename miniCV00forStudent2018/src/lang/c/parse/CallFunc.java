@@ -29,7 +29,7 @@ public class CallFunc extends CParseRule {
 		}
 		tk = ct.getCurrentToken(pcx);
 		if (Call.isFirst(tk)) {
-			call = new Call(pcx);
+			call = new Call(pcx, idtk);
 			call.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "()がありません");
@@ -42,11 +42,16 @@ public class CallFunc extends CParseRule {
 			setCType(ident.getCType());
 			setConstant(ident.isConstant());
 		}
+		if (call != null) {
+			call.semanticCheck(pcx);
+		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println("\tJSR " + idtk.getText() + "\t\t\t; CallFunc: 関数呼び出し");
+		if (call != null) {
+			call.codeGen(pcx);
+		}
 		o.println("\tMOV\tR0, (R6)+\t; CallFunc: 返り値(R0)をスタックに積む");
 	}
 }

@@ -6,7 +6,7 @@ import lang.c.parse.Program;
 
 public class MiniCompiler {
 	public static void main(String[] args) {
-		String inFile = "C:\\Users\\cs16048\\Documents\\JIKKEN2\\miniCV00forStudent2018\\src\\lang\\c\\TestCase\\Part10\\TestCase10.c"; // 適切なファイルを絶対パスで与えること
+		String inFile = args[0]; // 適切なファイルを絶対パスで与えること
 		IOContext ioCtx = new IOContext(inFile, System.out, System.err);
 		CTokenizer tknz = new CTokenizer(new CTokenRule());
 		CParseContext pcx = new CParseContext(ioCtx, tknz);

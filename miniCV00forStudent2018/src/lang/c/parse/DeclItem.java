@@ -12,6 +12,7 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class DeclItem extends CParseRule {
+	private CParseRule typelist;
 	private CSymbolTableEntry e;
 	//CSymbolTableEntryに必要な情報
 	String name = null;
@@ -39,7 +40,7 @@ public class DeclItem extends CParseRule {
 			name = tk.getText();
 			tk = ct.getNextToken(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "*の後に識別子がありません");
+			pcx.fatalError(tk.toExplainString() + "識別子がありません");
 		}
 		if (tk.getType() == CToken.TK_LBRA) {
 			tk = ct.getNextToken(pcx);
@@ -61,6 +62,11 @@ public class DeclItem extends CParseRule {
 			}
 		} else if (tk.getType() == CToken.TK_LPAR) {	//プロトタイプ宣言
 			tk = ct.getNextToken(pcx);
+			if (Typelist.isFirst(tk)) {
+				typelist = new Typelist(pcx);
+				typelist.parse(pcx);
+			}
+			tk = ct.getCurrentToken(pcx);
 			if (tk.getType() == CToken.TK_RPAR) {
 				size = 0;					//関数なので
 				constp = true;				//定数にしてf = 数値を防ぐ
@@ -72,6 +78,9 @@ public class DeclItem extends CParseRule {
 		e = cst.registerTable(name, type, size, constp);
 		if (e == null) {
 			pcx.fatalError("識別子" + name + "が重複して定義されています");
+		}
+		if (typelist != null) {
+			e.setlist(((Typelist)typelist).getList());
 		}
 	}
 

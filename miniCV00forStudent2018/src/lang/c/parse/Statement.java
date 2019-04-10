@@ -56,11 +56,11 @@ public class Statement extends CParseRule{
 	//	o.println(";;; statement completes");
 	}
 
-	public boolean isStatementReturn() {
+	public boolean checkStRt() {
 			return rule instanceof StatementReturn;
 	}
 
-	public boolean isStatementBranch() {
+	public boolean checkStBr() {
 		return rule instanceof StatementBranch;
 }
 }

@@ -115,7 +115,7 @@ class ExpressionAdd extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx);		// 左部分木のコード生成を頼む
 			right.codeGen(pcx);		// 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; ExpressionAdd: ２数を取り出して、足し、積む<" + op.toExplainString() + ">");
+			o.println("\tMOV\t-(R6), R0\t; ExpressionAdd: ２数を取り出して、足し、積む<" + op.toString() + ">");
 			o.println("\tMOV\t-(R6), R1\t; ExpressionAdd:");
 			o.println("\tADD\tR1, R0\t	; ExpressionAdd:");
 			o.println("\tMOV\tR0, (R6)+\t; ExpressionAdd:");
@@ -175,7 +175,7 @@ class ExpressionSub extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx);		// 左部分木のコード生成を頼む
 			right.codeGen(pcx);		// 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; ExpressionSub: ２数を取り出して、引き、積む<" + op.toExplainString() + ">");
+			o.println("\tMOV\t-(R6), R0\t; ExpressionSub: ２数を取り出して、引き、積む<" + op.toString() + ">");
 			o.println("\tMOV\t-(R6), R1\t; ExpressionSub:");
 			o.println("\tSUB\tR0, R1\t	; ExpressionSub:");
 			o.println("\tMOV\tR1, (R6)+\t; ExpressionSub:");

@@ -34,7 +34,11 @@ public class FactorAmp extends CParseRule {
 			if (rule instanceof Primary && ((Primary)rule).PMcheck()) {
 				pcx.fatalError(amp.toExplainString() + "&の後ろに*がきてはいけません");
 			}
-			setCType(CType.getCType(CType.T_pint));	// Typeをポインタにする
+			if (rule.getCType() == CType.getCType(CType.T_int)) {
+				setCType(CType.getCType(CType.T_pint));
+			} else if (rule.getCType() == CType.getCType(CType.T_ary)) {
+				setCType(CType.getCType(CType.T_ary));
+			}
 			setConstant(rule.isConstant());	// number は常に定数
 		}
 	}

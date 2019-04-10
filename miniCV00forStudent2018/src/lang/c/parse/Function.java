@@ -1,6 +1,8 @@
 package lang.c.parse;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import lang.FatalErrorException;
 import lang.c.CParseContext;
@@ -12,7 +14,8 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class Function extends CParseRule{
-	private CParseRule declblock;
+	private List<CType> argtypes;
+	private CParseRule arglist, declblock;
 	private CSymbolTableEntry e;
 	private CType ftype;
 	private CToken ident;
@@ -26,7 +29,8 @@ public class Function extends CParseRule{
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getNextToken(pcx);	//func
 		CSymbolTable cst = pcx.getTable();
-
+		argtypes = new ArrayList<CType>();
+		cst.setupLocalSymbolTable();		//local作成
 		if (tk.getType() == CToken.TK_INT) {
 			tk = ct.getNextToken(pcx);
 			ftype = CType.getCType(CType.T_int);
@@ -51,19 +55,25 @@ public class Function extends CParseRule{
 		} else {
 			pcx.fatalError(tk.toExplainString() + "(がありません");
 		}
+		if (Arglist.isFirst(tk)) {
+			arglist = new Arglist(pcx, argtypes);
+			arglist.parse(pcx);
+		}
+		tk = ct.getCurrentToken(pcx);
 		if (tk.getType() == CToken.TK_RPAR) {
 			tk = ct.getNextToken(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + ")がありません");
 		}
-		e = cst.searchTable(ident.getText());
+		e = cst.searchFunc(ident.getText());
 		if(e == null) {
-			pcx.fatalError(tk.toExplainString() + "この識別子は宣言されていません");
+			pcx.fatalError(tk.toExplainString() + "この関数は宣言されていません");
 		}
-
 		if (Declblock.isFirst(tk)) {
 			declblock = new Declblock(pcx,ident);
 			declblock.parse(pcx);
+			cst.showTable();
+			cst.deleteLocalSymbolTable();	//local削除
 		} else {
 			pcx.fatalError(tk.toExplainString() + "関数の内部がありません");
 		}
@@ -72,6 +82,16 @@ public class Function extends CParseRule{
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (ftype != e.getType()) {		//宣言と定義の型チェック
 			pcx.fatalError("プロトタイプ宣言と関数定義での型が一致していません");
+		}
+		if  ((argtypes.size() != e.getlist().size())) {
+			pcx.fatalError("プロトタイプ宣言と関数定義の引数の個数が一致しません");
+		}
+		int count = 0;
+		for (CType at : argtypes) {
+			if (at != e.getlist().get(count)) {
+				pcx.fatalError("プロトタイプ宣言と関数定義の引数の型が一致しません");
+			}
+			count++;
 		}
 		if (declblock != null) {
 			declblock.semanticCheck(pcx);

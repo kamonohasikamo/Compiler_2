@@ -36,7 +36,7 @@ public class Branchblock extends CParseRule {
 		if (tk.getType() == CToken.TK_RCUR) {
 			ct.getNextToken(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "Branch: } がありません");
+			pcx.fatalError(tk.toExplainString() + "}がありません");
 		}
 	}
 
@@ -45,7 +45,7 @@ public class Branchblock extends CParseRule {
 		for (CParseRule st : statements) {
 			if (st != null) {
 				st.semanticCheck(pcx);
-				if (((Statement)st).isStatementReturn()) {
+				if (((Statement)st).checkStRt()) {
 					setCType(st.getCType());
 				}
 			}

@@ -12,6 +12,9 @@ public class CSymbolTable {
 		private int addrNo = 0;
 		public int getAddrNo() { return addrNo; }
 		public void setAddrNo(int num) { addrNo = num; }
+
+		private int fdNo = -3;
+		public int getfdNo() { return fdNo--; }
 	}
 	private OneSymbolTable global = new OneSymbolTable();	// 大域変数用
 	private OneSymbolTable local; 							// 局所変数用
@@ -59,6 +62,23 @@ public class CSymbolTable {
 				return null;	//見つからない
 			}
 		}
+	}
+
+	public CSymbolTableEntry searchFunc(String name) {
+		CSymbolTableEntry e = null;
+		e = global.search(name);
+		if (e != null) {	//globalにしか関数はない
+			return e;
+		} else {
+			return null;	//見つからない
+		}
+	}
+
+	public void setfd(String name) {
+		CSymbolTableEntry e, e2;
+		e = local.search(name);		//作成後なので必ず通る
+		e2 = new CSymbolTableEntry(e.getType(), 1, e.getConstp(), e.getIsGlobal(), local.getfdNo());
+		local.register(name, e2);
 	}
 
 	public void setupLocalSymbolTable() {

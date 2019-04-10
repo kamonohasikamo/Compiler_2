@@ -1,5 +1,8 @@
 package lang.c;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lang.SymbolTableEntry;
 
 public class CSymbolTableEntry extends SymbolTableEntry {
@@ -8,6 +11,8 @@ public class CSymbolTableEntry extends SymbolTableEntry {
 	private boolean constp; // 定数宣言か？
 	private boolean isGlobal; // 大域変数か？
 	private int address; // 割り当て番地
+
+	private List<CType> atlist = new ArrayList<CType>();
 
 	public CSymbolTableEntry(CType type, int size, boolean constp, boolean isGlobal, int addr) {
 		this.type = type;
@@ -25,4 +30,12 @@ public class CSymbolTableEntry extends SymbolTableEntry {
 	public boolean getConstp() { return constp; }
 	public boolean getIsGlobal() { return isGlobal; }
 	public int getAddress() { return address; }
+
+	public List<CType> getlist() {
+		return atlist;
+	}
+
+	public void setlist(List<CType> list) {
+		atlist = list;
+	}
 }

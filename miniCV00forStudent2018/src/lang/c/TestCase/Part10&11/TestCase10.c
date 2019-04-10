@@ -26,8 +26,8 @@ func int cc() {
 	output c[19];
 	call aa();
 	a = call f();
-	//a = 5 + call aa(); // voidŒ^‚È‚Ì‚Å‘«‚¹‚È‚¢ -> ƒGƒ‰[
-	aa();
+	//a = 5 + aa(); // voidŒ^‚È‚Ì‚Å‘«‚¹‚È‚¢ -> ƒGƒ‰[
+	//aa();
 	return 1 * 3 + a;
 	//return a;
 }
