@@ -157,7 +157,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 30;
-				} else if (ch == '!') {		//ne
+				} else if (ch == '!') {		//ne or not
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 33;
@@ -173,6 +173,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					startCol = colNo - 1;
 					text.append(ch);
 					state = 37;
+				} else if (ch == '|') {		//or
+					startCol = colNo - 1;
+					text.append(ch);
+					state = 39;
 				} else {			// ヘンな文字を読んだ
 					startCol = colNo - 1;
 					text.append(ch);
@@ -266,8 +270,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 				accept = true;
 				break;
 			case 10:				// &を読んだ
-				tk = new CToken(CToken.TK_AMP, lineNo, startCol, "&");
-				accept = true;
+				ch = readChar();
+				if (ch == '&') {
+					text.append(ch);
+					state = 38;
+				} else {
+					backChar(ch);
+					tk = new CToken(CToken.TK_AMP, lineNo, startCol, "&");
+					accept = true;
+				}
 				break;
 			case 11:				// 0を読んだ（8進数、16進数）
 				ch = readChar();
@@ -496,7 +507,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					state = 34;
 				} else {
 					backChar(ch);
-					tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
+					tk = new CToken(CToken.TK_NOT, lineNo, startCol, "!");
 					accept = true;
 				}
 				break;
@@ -514,6 +525,25 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 				break;
 			case 37:
 				tk = new CToken(CToken.TK_AT, lineNo, startCol, "@");
+				accept = true;
+				break;
+			case 38:
+				tk = new CToken(CToken.TK_AND, lineNo, startCol, "&&");
+				accept = true;
+				break;
+			case 39:
+				ch = readChar();
+				if (ch == '|') {
+					text.append(ch);
+					state = 40;
+				} else {
+					backChar(ch);
+					tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
+					accept = true;
+				}
+				break;
+			case 40:
+				tk = new CToken(CToken.TK_OR, lineNo, startCol, "||");
 				accept = true;
 				break;
 			}

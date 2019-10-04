@@ -37,6 +37,10 @@ public class CToken extends SimpleToken {
 	public static final int TK_FUNC			= 33;	// FUNC
 	public static final int TK_CALL			= 34;	// CALL
 	public static final int TK_AT			= 35;	// @
+	public static final int TK_NOT			= 36;	// NOT
+	public static final int TK_AND			= 37;	// AND
+	public static final int TK_OR			= 38;	// OR
+
 
 	public CToken(int type, int lineNo, int colNo, String s) {
 		super(type, lineNo, colNo, s);
